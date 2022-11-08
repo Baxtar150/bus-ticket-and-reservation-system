@@ -1,0 +1,151 @@
+
+import re
+import tkinter as Tk
+from tkinter import *
+from tkinter import messagebox, ttk
+from tkcalendar import *
+from ttkthemes import ThemedTk
+from tkinter import messagebox
+import control.Controllerdb as db
+import login 
+from login import logingui
+
+def Registration():
+    def loginbtn():
+        rt.destroy()
+        logingui()
+
+    def submit_records():
+        dbQuery = db.controller()
+        
+        if((Name.get()) == "" or (Email.get()) == "" or (Phone.get())== "" or (Gender.get())== "" or (Marital_status.get())== "True" or (DObirth.get())== "" or (Password.get())== ""):
+            messagebox.showwarning('Empyt Field', 'The field is required please fill.')
+            return
+        
+        
+        
+        # if(dbQuery.empty(Name.get()) == True or dbQuery.empty(Email.get()) == True or dbQuery.empty(Phone.get())== True or dbQuery.empty(Gender.get())==True or dbQuery.empty(Marital_status.get())== True or dbQuery.empty(DObirth.get())== True or dbQuery.empty(Password.get())== True):
+        #     messagebox.showwarning('Empyt Field', 'The field is required please fill.')
+        #     return
+        if not(Password.get()==Repeatpass.get()):
+            messagebox.showwarning('UnMatch Password', 'The password does not match.')
+            return
+            
+        # if(dbQuery.match(Password.get(),Repeatpass.get()) == False):
+        #     messagebox.showwarning('UnMatch Password', 'The password does not match.')
+        #     return
+        
+        # if Email.get():
+        #     messagebox.showwarning('Record Exist', 'The email used is already exist!')
+        #     return
+        # if(dbQuery.checkEmail(Email.get())== True):
+        #     messagebox.showwarning('Record Exist', 'The email used is already exist!')
+        #     return
+        
+        try:
+            sql = "INSERT INTO `users`(`Fullname`, `Email`, `Phone`, `Gender`, `Marital_status`, `DOB`, `Password`) VALUES (%s,%s,%s,%s,%s,%s,%s)"
+            print("i dey here")
+            
+            values=(Name.get(),Email.get(), Phone.get(),Gender.get(),Marital_status.get(),DObirth.get(),Password.get())
+            print("i dey here")
+            print(values)
+            dbQuery.queryDB(sql,values)
+        
+            messagebox.showinfo('Saved Record', 'Record has been saved successfully.')
+        
+        except:
+            messagebox.showerror("err", "Record not successfully saved")
+
+
+    rt =ThemedTk(theme='adapta', themebg=True)
+    rt.title("JayTeeOjo Transportation")
+    width = 600
+    height = 490
+    sw = rt.winfo_screenwidth()
+    sh = rt.winfo_screenheight()
+    x = sw // 2 - width // 2
+    y = sh // 2 - height // 2
+    rt.geometry(f'{width}x{height}+{x}+{y}')
+    rt.resizable(0, 0)
+    # rt.overrideredirect(True)
+
+    style=ttk.Style()
+
+    style.configure("Framebg.TFrame",background="blue")
+    style.configure("Framebg2.TFrame",background="red")
+    style.configure("inputregister.TLabel", font=("Arial",14,"bold"))
+    style.configure("inputregister.TFrame", font=(14))
+    style.configure("inputlogin.TButton", font=("Arial",14,"bold"),background="red")
+
+    registrationframe= ttk.Frame(rt)
+    registrationframe.pack(pady=5)
+    inputframe=ttk.Frame(rt,width=500, height=70)
+    inputframe.pack()
+
+    registerframe= ttk.Frame(registrationframe)
+    registerframe.pack(pady=5)
+    #,style="Framebg.TFrame",,,  ,style="Framebg2.TFrame", ,style="Framebg.TFrame"
+    inputregister=ttk.Frame(registrationframe)
+    inputregister.pack(pady=5)
+
+    #creating registartion labels 
+    #palced text=Register in a different frame
+    registerlbl=ttk.Label(registerframe, text="Register", font=("Arial",22,"bold"))
+    registerlbl.grid()
+
+
+    #Stringvar
+    global Name,Email,Phone,Gender,Marital_status,DObirth,Password,Repeatpass
+    Name=StringVar()
+    Email=StringVar()
+    Phone=StringVar()
+    Gender=StringVar()
+    Marital_status=StringVar()
+    DObirth=StringVar()
+    Password=StringVar()
+    Repeatpass=StringVar()
+
+    #Form content inputregister frame
+    namelbl=ttk.Label(inputregister,text="Name",style="inputregister.TLabel")
+    namelbl.grid(row=0,column=0, sticky="WE")
+    emaillbl=ttk.Label(inputregister,text="Email",style="inputregister.TLabel")
+    emaillbl.grid(row=1,column=0, sticky="WE")
+    phonelbl=ttk.Label(inputregister,text="Phone",style="inputregister.TLabel")
+    phonelbl.grid(row=2,column=0,sticky="WE")
+    genderlbl=ttk.Label(inputregister,text="Gender",style="inputregister.TLabel")
+    genderlbl.grid(row=3,column=0,sticky="WE")
+    statuslbl=ttk.Label(inputregister,text="Marital Status",style="inputregister.TLabel")
+    statuslbl.grid(row=4,column=0,sticky="WE")
+    doblbl=ttk.Label(inputregister,text="Date of Birth",style="inputregister.TLabel")
+    doblbl.grid(row=5,column=0, sticky="WE")
+    passwordlbl=ttk.Label(inputregister,text="Password",style="inputregister.TLabel")
+    passwordlbl.grid(row=6,column=0, sticky="WE")
+    repasswordlbl=ttk.Label(inputregister,text="Password",style="inputregister.TLabel")
+    repasswordlbl.grid(row=7,column=0, sticky="WE")
+
+    nameentry=ttk.Entry(inputregister,width=30,justify="center",textvariable=Name, font=(10))
+    nameentry.grid(row=0, column=1,sticky="WE",pady=5)
+    emailentry=ttk.Entry(inputregister,width=30,justify="center",textvariable=Email,font=(10))
+    emailentry.grid(row=1, column=1,sticky="WE",pady=5)
+    phoneentry=ttk.Entry(inputregister,width=30,justify="center",textvariable=Phone,font=(10))
+    phoneentry.grid(row=2, column=1,sticky="WE",pady=5)
+    genderentry=ttk.Combobox(inputregister, values=("Male","Female"), state='readonly',textvariable=Gender)
+    genderentry.grid(row=3, column=1, sticky='WE', pady=(0, 5))
+    statusentry=ttk.Combobox(inputregister, values=("Single","Married","Divorced"), state='readonly',textvariable=Marital_status)
+    statusentry.grid(row=4, column=1, sticky='WE', pady=(0, 5))
+    dobentry=DateEntry(inputregister,textvariable=DObirth)
+    dobentry.grid(row=5, column=1,sticky='WE', pady=(0, 5))
+    passwordentry=ttk.Entry(inputregister,width=30,justify="center",textvariable=Password, font=(10),show="$")
+    passwordentry.grid(row=6, column=1,sticky="WE",pady=5)
+    repasswordentry=ttk.Entry(inputregister,width=30,justify="center",textvariable=Repeatpass, font=(10))
+    repasswordentry.grid(row=7, column=1,sticky="WE",pady=5)
+
+
+    submitbtn=ttk.Button(inputframe,text="Sign Up",style="inputlogin.TButton",command=submit_records)
+    submitbtn.place(x=350,y=0)
+    loginbn=ttk.Button(inputframe,text="Login",style="inputlogin.TButton",command=loginbtn)
+    loginbn.place(x=200,y=0)
+    clearbtn=ttk.Button(inputframe,text="Clear",style="inputlogin.TButton")
+    clearbtn.place(x=50,y=0)
+
+    rt.mainloop()
